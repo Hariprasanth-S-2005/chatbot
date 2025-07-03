@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FunBot - Stylish Chatbot</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #ffecd2, #fcb69f);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .chat-container {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      width: 420px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 10px;
+      color: #ff7e5f;
+    }
+
+    .messages {
+      height: 350px;
+      overflow-y: auto;
+      padding: 10px;
+      border: 1px solid #eee;
+      border-radius: 15px;
+      background: #fafafa;
+      margin-bottom: 15px;
+    }
+
+    .message {
+      max-width: 75%;
+      padding: 10px 15px;
+      margin: 8px 0;
+      border-radius: 20px;
+      position: relative;
+      word-wrap: break-word;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .user {
+      background: #d0f0fd;
+      align-self: flex-end;
+      color: #333;
+    }
+
+    .bot {
+      background: #ffe0c1;
+      align-self: flex-start;
+      color: #333;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      outline: none;
+      font-size: 14px;
+      margin-right: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background: #ff7e5f;
+      border: none;
+      border-radius: 20px;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      font-size: 14px;
+    }
+
+    button:hover {
+      background: #eb6b4d;
+    }
+
+    .input-area {
+      display: flex;
+      align-items: center;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="chat-container">
+    <h2>🤖 FunBot Chat</h2>
+    <div class="messages" id="chat"></div>
+    <div class="input-area">
+      <input type="text" id="input" placeholder="Type your message..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    const chat = document.getElementById("chat");
+
+    function appendMessage(sender, text) {
+      const msg = document.createElement("div");
+      msg.classList.add("message", sender);
+      typeEffect(msg, text);
+      chat.appendChild(msg);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function typeEffect(element, text) {
+      let i = 0;
+      const speed = 30;
+      const typing = setInterval(() => {
+        element.innerHTML += text.charAt(i);
+        i++;
+        if (i >= text.length) {
+          clearInterval(typing);
+        }
+      }, speed);
+    }
+
+    function sendMessage() {
+      const input = document.getElementById("input");
+      const userText = input.value.trim();
+      if (!userText) return;
+      appendMessage("user", userText);
+      processMessage(userText.toLowerCase());
+      input.value = "";
+    }
+
+    function processMessage(msg) {
+      if (msg.includes("joke")) {
+        tellJoke();
+      } else if (msg.includes("fact")) {
+        funFact();
+      } else if (msg.includes("game") || msg.includes("play")) {
+        rockPaperScissors();
+      } else if (msg.includes("bye") || msg.includes("exit")) {
+        appendMessage("bot", "Goodbye! 😄 Have a fun day!");
+      } else {
+        appendMessage("bot", "I can tell jokes, fun facts, or play Rock-Paper-Scissors. Try asking!");
+      }
+    }
+
+    function tellJoke() {
+      const jokes = [
+        "Why don’t scientists trust atoms? Because they make up everything! 😂",
+        "Why did the scarecrow win an award? Because he was outstanding in his field! 😆",
+        "I told my computer I needed a break, and it said 'No problem, I’ll go to sleep!' 🤖"
+      ];
+      const joke = jokes[Math.floor(Math.random() * jokes.length)];
+      appendMessage("bot", joke);
+    }
+
+    function funFact() {
+      const facts = [
+        "Honey never spoils. Archaeologists have found edible honey in ancient Egyptian tombs! 🍯",
+        "Bananas are berries, but strawberries aren't! 🍌🍓",
+        "Octopuses have three hearts! 🐙"
+      ];
+      const fact = facts[Math.floor(Math.random() * facts.length)];
+      appendMessage("bot", fact);
+    }
+
+    function rockPaperScissors() {
+      const choices = ["rock", "paper", "scissors"];
+      const userChoice = prompt("Rock, Paper, or Scissors?").toLowerCase();
+      const botChoice = choices[Math.floor(Math.random() * choices.length)];
+      let result = "";
+
+      if (!choices.includes(userChoice)) {
+        result = "That's not a valid choice!";
+      } else if (userChoice === botChoice) {
+        result = `I chose ${botChoice}. It's a tie! 😄`;
+      } else if (
+        (userChoice === "rock" && botChoice === "scissors") ||
+        (userChoice === "scissors" && botChoice === "paper") ||
+        (userChoice === "paper" && botChoice === "rock")
+      ) {
+        result = `I chose ${botChoice}. You win! 🎉`;
+      } else {
+        result = `I chose ${botChoice}. I win! 😜`;
+      }
+
+      appendMessage("bot", result);
+    }
+  </script>
+
+</body>
+</html>
